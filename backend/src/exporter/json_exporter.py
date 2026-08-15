@@ -235,9 +235,6 @@ class JSONExporter:
 
         # Add stage3-specific fields
         if is_stage3:
-            formatted["novelty_score"] = result.get("novelty_score", 0.0)
-            formatted["impact_score"] = result.get("impact_score", 0.0)
-            formatted["quality_score"] = result.get("quality_score", 0.0)
             formatted["custom_fields"] = result.get("custom_fields", {})
 
         return formatted

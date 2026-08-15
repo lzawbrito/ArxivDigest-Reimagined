@@ -248,7 +248,7 @@ function navigate(date: string | null) {
 }
 
 .bg-accent-light {
-    background-color: #eff6ff; /* blue-50 */
+    background-color: #ecf2f9; /* light tint of --color-blue */
 }
 
 .text-accent {

@@ -28,9 +28,6 @@ const BaseStageResultSchema = z.object({
 
 // Stage 3 result schema (extends base with additional fields)
 const Stage3ResultSchema = BaseStageResultSchema.extend({
-    novelty_score: z.number(),
-    impact_score: z.number(),
-    quality_score: z.number(),
     custom_fields: z.record(z.string()).optional(),
 });
 

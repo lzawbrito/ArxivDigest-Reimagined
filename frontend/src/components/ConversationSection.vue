@@ -69,7 +69,7 @@ function formatMessageContent(msg: Message): string {
                 Score: {{ score.toFixed(2) }}
                 <FontAwesomeIcon
                     :icon="pass ? 'check' : 'xmark'"
-                    :style="{ color: pass ? '#56ec78' : '#ff5757' }"
+                    :style="{ color: pass ? 'var(--color-green)' : 'var(--color-red)' }"
                 />
             </span>
         </div>

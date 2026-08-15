@@ -38,11 +38,6 @@ class Stage3Result(FilterResult):
         description="User-defined custom output fields (Simple Markdown and '$'-wrapped LaTeX supported)",
     )
 
-    # Common multi-dimensional scores
-    novelty_score: float = Field(ge=0.0, le=1.0, description="Novelty of the work")
-    impact_score: float = Field(ge=0.0, le=1.0, description="Potential impact")
-    quality_score: float = Field(ge=0.0, le=1.0, description="Technical quality")
-
 
 # Helper function to add pass_filter
 def add_pass_filter(result: FilterResult, threshold: float) -> dict:

@@ -98,49 +98,6 @@ const customFields = computed(() => {
             <MarkdownRenderer :content="paper.abstract" :inline="true" />
         </div>
 
-        <div v-if="isStage3 && paper.stage3" class="scores">
-            <div class="score-item">
-                <span class="score-label">Overall:</span>
-                <div class="score-bar">
-                    <div
-                        class="score-fill"
-                        :style="{ width: paper.stage3.score * 100 + '%' }"
-                    ></div>
-                </div>
-                <span class="score-value">{{ paper.stage3.score.toFixed(2) }}</span>
-            </div>
-            <div class="score-item">
-                <span class="score-label">Novelty:</span>
-                <div class="score-bar">
-                    <div
-                        class="score-fill"
-                        :style="{ width: paper.stage3.novelty_score * 100 + '%' }"
-                    ></div>
-                </div>
-                <span class="score-value">{{ paper.stage3.novelty_score.toFixed(2) }}</span>
-            </div>
-            <div class="score-item">
-                <span class="score-label">Impact:</span>
-                <div class="score-bar">
-                    <div
-                        class="score-fill"
-                        :style="{ width: paper.stage3.impact_score * 100 + '%' }"
-                    ></div>
-                </div>
-                <span class="score-value">{{ paper.stage3.impact_score.toFixed(2) }}</span>
-            </div>
-            <div class="score-item">
-                <span class="score-label">Quality:</span>
-                <div class="score-bar">
-                    <div
-                        class="score-fill"
-                        :style="{ width: paper.stage3.quality_score * 100 + '%' }"
-                    ></div>
-                </div>
-                <span class="score-value">{{ paper.stage3.quality_score.toFixed(2) }}</span>
-            </div>
-        </div>
-
         <div v-if="mainResult.reasoning" class="reasoning">
             <div class="reasoning-title">Analysis:</div>
             <MarkdownRenderer :content="mainResult.reasoning" class="reasoning-text" />
