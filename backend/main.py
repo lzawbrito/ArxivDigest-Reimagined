@@ -120,8 +120,13 @@ async def async_main(config: dict) -> None:
     )
 
     if not papers:
-        logger.error("No papers fetched from arXiv")
-        sys.exit(1)
+        # arXiv has no "new" listing on weekends/holidays, or the fetch can fail
+        # transiently (network hiccup, page layout change). Either way this isn't
+        # fatal: continue with an empty list so the pipeline still exports a valid
+        # (empty) digest.json, and the GitHub Actions workflow's downstream history
+        # archiving / frontend build / Pages deploy steps still run instead of the
+        # whole job aborting here.
+        logger.warning("No papers fetched from arXiv — continuing with an empty digest")
 
     logger.info(f"Fetched {len(papers)} papers from arXiv")
 

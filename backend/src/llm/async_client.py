@@ -11,7 +11,7 @@ from pydantic import BaseModel
 from .cost_calculator import (
     CostInfo,
     UsageInfo,
-    calculate_deepseek_cost,
+    calculate_cost,
     extract_usage_from_response,
 )
 
@@ -111,8 +111,7 @@ class AsyncLLMClient:
                 # Extract usage information from response
                 usage = extract_usage_from_response(response)
 
-                # Calculate cost using DeepSeek pricing
-                cost_info = calculate_deepseek_cost(usage)
+                cost_info = calculate_cost(usage, self.model)
 
                 # Log usage and cost
                 if usage:

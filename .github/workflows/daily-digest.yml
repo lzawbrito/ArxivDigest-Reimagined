@@ -2,8 +2,12 @@ name: Generate Daily Digest
 
 on:
   schedule:
-    # Run at 00:00 AM UTC every day (08:00 AM Beijing Time)
-    - cron: "0 0 * * *"
+    # arXiv announces new submissions ~20:00 US Eastern Sun-Thu, which is 00:00 UTC
+    # (EDT) or 01:00 UTC (EST) — 06:00 UTC gives a comfortable buffer after either,
+    # so the fetch never races the listing update. No new listing posts Fri/Sat, so
+    # main.py just re-fetches the latest available day (handled gracefully, not an
+    # error) on those runs.
+    - cron: "0 6 * * *"
   workflow_dispatch: # Allow manual trigger
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages

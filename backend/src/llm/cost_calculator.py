@@ -18,34 +18,45 @@ class CostInfo(TypedDict, total=False):
     currency: str
 
 
-def calculate_deepseek_cost(usage: UsageInfo | None) -> CostInfo | None:
-    """
-    Calculate estimated cost for DeepSeek API usage.
+# Per-million-token pricing for models this project has been run with. Add an
+# entry here when switching to a new provider/model; unknown models simply skip
+# cost estimation (usage/token counts are still logged) rather than guessing.
+_MODEL_PRICING: dict[str, tuple[float, float, str]] = {
+    # model prefix -> (input $/MTok, output $/MTok, currency)
+    "claude-haiku-4-5": (1.0, 5.0, "USD"),
+    "deepseek-chat": (2.0, 3.0, "CNY"),
+}
 
-    Pricing (CNY):
-    - Input (cache miss): 2 CNY per million tokens
-    - Output: 3 CNY per million tokens
+
+def calculate_cost(usage: UsageInfo | None, model: str) -> CostInfo | None:
+    """
+    Estimate cost for a completion given token usage and the model name.
 
     Args:
         usage: Usage information with token counts
+        model: Model name/string as configured in llm.model
 
     Returns:
-        Cost information with estimated cost in CNY, or None if usage is None
+        Cost information with estimated cost, or None if usage or pricing is unavailable
     """
     if not usage:
         return None
 
+    pricing = next((p for prefix, p in _MODEL_PRICING.items() if model.startswith(prefix)), None)
+    if pricing is None:
+        return None
+
+    input_price, output_price, currency = pricing
     prompt_tokens = usage.get("prompt_tokens") or 0
     completion_tokens = usage.get("completion_tokens") or 0
 
-    # DeepSeek pricing in CNY per million tokens
-    prompt_cost = (prompt_tokens / 1_000_000) * 2.0  # 2 CNY per million input tokens
-    completion_cost = (completion_tokens / 1_000_000) * 3.0  # 3 CNY per million output tokens
+    prompt_cost = (prompt_tokens / 1_000_000) * input_price
+    completion_cost = (completion_tokens / 1_000_000) * output_price
     total_cost = prompt_cost + completion_cost
 
     return {
         "estimated_cost": total_cost,
-        "currency": "CNY",
+        "currency": currency,
     }
 
 

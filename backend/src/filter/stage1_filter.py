@@ -125,8 +125,7 @@ class Stage1Filter:
 
         # Log statistics
         passed = sum(1 for _, result in all_results if result["pass_filter"])
-        logger.info(
-            f"Stage 1 complete: {passed}/{len(papers)} papers passed ({passed / len(papers) * 100:.1f}%)"
-        )
+        pct = passed / len(papers) * 100 if papers else 0.0
+        logger.info(f"Stage 1 complete: {passed}/{len(papers)} papers passed ({pct:.1f}%)")
 
         return all_results
