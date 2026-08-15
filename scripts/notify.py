@@ -18,17 +18,26 @@ MAX_TITLES_SHOWN = 5
 
 
 def build_notification(digest: dict, site_url: str) -> tuple[str, str] | None:
-    """Build (title, body) for the notification, or None if nothing to send."""
-    passed = digest["metadata"]["stats"]["stage3_passed"]
-    if passed == 0:
+    """Build (title, body) for the notification, or None if nothing to send.
+
+    Only skips when arXiv had nothing to fetch at all (total_papers == 0 —
+    a weekend/holiday/failed fetch). A "0 relevant papers today" digest still
+    notifies, so a lack of Stage 3 papers doesn't look like a silent failure.
+    """
+    stats = digest["metadata"]["stats"]
+    if stats["total_papers"] == 0:
         return None
 
+    passed = stats["stage3_passed"]
     titles = [p["title"] for p in digest["papers"] if p.get("max_stage") == 3]
     shown = titles[:MAX_TITLES_SHOWN]
 
-    lines = [f"- {t}" for t in shown]
-    if len(titles) > len(shown):
-        lines.append(f"...and {len(titles) - len(shown)} more")
+    if passed == 0:
+        lines = ["No papers passed the relevance filter today."]
+    else:
+        lines = [f"- {t}" for t in shown]
+        if len(titles) > len(shown):
+            lines.append(f"...and {len(titles) - len(shown)} more")
     if site_url:
         lines.append(f"\n{site_url}")
 
@@ -64,7 +73,7 @@ def main() -> None:
     digest = json.loads(digest_path.read_text())
     notification = build_notification(digest, site_url)
     if notification is None:
-        print("No Stage 3 papers today, skipping notification")
+        print("No papers fetched today, skipping notification")
         return
 
     title, body = notification
