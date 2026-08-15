@@ -267,8 +267,8 @@ Evaluate this paper's relevance to the user's interests."""
             List of message dicts
         """
         system_message = """You are an expert at deeply analyzing academic papers.
-Your task is to thoroughly evaluate the paper's relevance, novelty, impact, and quality.
-Provide multi-dimensional scores and extract specific information as requested."""
+Your task is to thoroughly evaluate the paper's relevance to the user's interests and
+extract specific information as requested."""
 
         custom_fields_prompt = ""
         if custom_fields:
@@ -307,10 +307,7 @@ User's interests: {user_prompt}
 
 Provide a comprehensive analysis including:
 1. Overall relevance score
-2. Novelty score (how original is the work?)
-3. Impact score (potential significance?)
-4. Quality score (technical soundness?)
-5. Detailed reasoning for your assessment{custom_fields_prompt}"""
+2. Detailed reasoning for your assessment{custom_fields_prompt}"""
 
         return [
             {"role": "system", "content": system_message},

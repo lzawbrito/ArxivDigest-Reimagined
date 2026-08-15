@@ -27,10 +27,7 @@ const {
     </div>
     <div v-else-if="digestData" class="container">
         <header>
-            <h1>
-                🎓
-                {{ digestData.metadata.title }}
-            </h1>
+            <h1>{{ digestData.metadata.title }}</h1>
             <div class="header-controls">
                 <span class="generated-label">Generated on</span>
                 <DateNavigator

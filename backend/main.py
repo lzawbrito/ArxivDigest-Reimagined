@@ -181,7 +181,7 @@ async def async_main(config: dict) -> None:
         highlight_info=highlight_info_map,
         config=config,
         output_path=str(output_path),
-        title="ArXiv Digest - Reimagined",
+        title="lzawbrito's ArXiv Digest",
     )
 
     # Print summary
