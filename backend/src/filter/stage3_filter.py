@@ -172,6 +172,15 @@ class Stage3Filter:
                         result_dict = prepare_result_with_conversation(
                             result_obj, self.threshold, messages, usage, cost_info
                         )
+                        # custom_fields is an open dict in the schema (needed since field
+                        # names are user-defined), so nothing stops the LLM from adding
+                        # fields beyond what was configured. Drop anything not requested.
+                        configured_names = {f.get("name", "") for f in self.custom_fields}
+                        result_dict["custom_fields"] = {
+                            k: v
+                            for k, v in result_dict.get("custom_fields", {}).items()
+                            if k in configured_names
+                        }
                     self.cache_manager.set(3, paper["id"], result_dict, self.config_hash)
                     evaluated_results.append((paper, result_dict))
 
