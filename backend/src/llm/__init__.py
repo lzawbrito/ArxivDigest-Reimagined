@@ -1,7 +1,7 @@
 """LLM client and related utilities."""
 
 from .async_client import AsyncLLMClient
-from .cost_calculator import CostInfo, UsageInfo, calculate_deepseek_cost
+from .cost_calculator import CostInfo, UsageInfo, calculate_cost
 from .schemas import (
     FilterResult,
     Stage1Result,
@@ -19,5 +19,5 @@ __all__ = [
     "prepare_result_with_conversation",
     "UsageInfo",
     "CostInfo",
-    "calculate_deepseek_cost",
+    "calculate_cost",
 ]
