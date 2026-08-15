@@ -153,3 +153,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Download digest.json artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: digest-json
+          path: digest-data/
+
+      - name: Send notification
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          SITE_URL: ${{ format('https://{0}.github.io{1}', github.event.repository.owner.login, vars.BASE_URL || format('/{0}/', github.event.repository.name)) }}
+        run: python3 scripts/notify.py digest-data/digest.json
