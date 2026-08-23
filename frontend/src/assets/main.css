@@ -321,9 +321,9 @@ header h1 {
     max-height: 1000px;
 }
 
-.paper-abstract strong {
-    font-weight: 700;
-    color: #444;
+.paper-abstract .markdown-renderer strong {
+    font-weight: inherit;
+    color: inherit;
 }
 
 .reasoning {
