@@ -8,11 +8,13 @@ from .cost_calculator import CostInfo, UsageInfo
 class FilterResult(BaseModel):
     """Base result for paper filtering (LLM output only)."""
 
-    score: float = Field(ge=0.0, le=1.0, description="Overall relevance score (0-1)")
+    # reasoning precedes score so the model generates its assessment before
+    # committing to a number, rather than rationalizing a score after the fact.
     reasoning: str = Field(
         "",
         description="One-line reasoning for the score decision (Plain text, ~150 Chinese characters or ~80 English words)",
     )
+    score: float = Field(ge=0.0, le=1.0, description="Overall relevance score (0-1)")
 
 
 class Stage1Result(FilterResult):

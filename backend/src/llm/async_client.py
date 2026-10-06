@@ -17,6 +17,28 @@ from .cost_calculator import (
 
 T = TypeVar("T", bound=BaseModel)
 
+# Without an explicit rubric, the model reads a multi-topic interest statement as
+# a checklist and marks down papers that are squarely on one topic for not also
+# covering the others, which pushes clearly relevant papers under the thresholds.
+# SCORING_REMINDER restates the key rule at the end of the user message, where it
+# isn't buried behind a long paper text in Stage 3.
+SCORING_REMINDER = (
+    "Score against the single closest listed interest, following the scoring guide. "
+    "Do not lower the score for interests the paper does not address."
+)
+
+SCORING_GUIDE = """Scoring guide:
+The user's interests are a list of alternatives, not a checklist. A paper that squarely
+addresses ANY ONE listed interest is a strong match, even if it touches none of the others.
+Never lower a score because the paper is narrower than the user's full set of interests or
+omits other topics they mention. Lower it only for how far the paper's own subject is from
+the closest listed interest, or for falling under something the user explicitly excludes.
+- 0.9-1.0: The paper's main subject is one of the listed interests.
+- 0.7-0.9: A listed interest is a substantial part of the paper, or the paper is a close
+  neighbor (same objects, models or methods) that the user would very likely want to read.
+- 0.4-0.7: Tangential: listed topics appear only as motivation, an application or an aside.
+- 0.0-0.4: Unrelated, or within an explicit exclusion."""
+
 
 class AsyncLLMClient:
     """
@@ -188,7 +210,9 @@ class AsyncLLMClient:
         system_message = """You are an expert at quickly screening academic papers for relevance.
 Your task is to determine if a paper is potentially relevant based ONLY on its title and categories.
 This is a fast preliminary filter - be generous in passing papers that might be relevant.
-Respond with a score (0-1) and a relevance statement."""
+Respond with a score (0-1) and a relevance statement.
+
+""" + SCORING_GUIDE
 
         user_message = f"""User's interests: {user_prompt}
 
@@ -196,7 +220,8 @@ Paper Information:
 - Title: {title}
 - Categories: {", ".join(categories)}
 
-Is this paper potentially relevant? Provide a quick assessment."""
+Is this paper potentially relevant? Provide a quick assessment.
+{SCORING_REMINDER}"""
 
         return [
             {"role": "system", "content": system_message},
@@ -226,7 +251,9 @@ Is this paper potentially relevant? Provide a quick assessment."""
         """
         system_message = """You are an expert at evaluating academic paper relevance.
 Your task is to determine if a paper is relevant based on its metadata and abstract.
-Provide a detailed assessment with a relevance score and reasoning."""
+Provide a detailed assessment with a relevance score and reasoning.
+
+""" + SCORING_GUIDE
 
         user_message = f"""User's interests: {user_prompt}
 
@@ -236,7 +263,8 @@ Paper Information:
 - Categories: {", ".join(categories)}
 - Abstract: {abstract}
 
-Evaluate this paper's relevance to the user's interests."""
+Evaluate this paper's relevance to the user's interests.
+{SCORING_REMINDER}"""
 
         return [
             {"role": "system", "content": system_message},
@@ -268,7 +296,9 @@ Evaluate this paper's relevance to the user's interests."""
         """
         system_message = """You are an expert at deeply analyzing academic papers.
 Your task is to thoroughly evaluate the paper's relevance to the user's interests and
-extract specific information as requested."""
+extract specific information as requested.
+
+""" + SCORING_GUIDE
 
         custom_fields_prompt = ""
         if custom_fields:
@@ -307,7 +337,9 @@ User's interests: {user_prompt}
 
 Provide a comprehensive analysis including:
 1. Overall relevance score
-2. Detailed reasoning for your assessment{custom_fields_prompt}"""
+2. Detailed reasoning for your assessment
+
+{SCORING_REMINDER}{custom_fields_prompt}"""
 
         return [
             {"role": "system", "content": system_message},
